@@ -1,0 +1,51 @@
+const Discord = require('discord.js');
+
+const { prefix, token } = require('./config.json')
+
+const client = new Discord.Client();
+
+// annonce que le bot est en ligne
+client.once('ready', () => {
+    console.log('Ready  !');
+});
+
+
+// commands basic
+client.on('message', (message) => {
+
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    
+    const args = message.content.slice(prefix.length).split(/ +/);
+    const command = args.shift().toLowerCase();
+
+    if (command === `ping`) {  
+        message.channel.send(`🏓 Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`);
+    }
+
+    else if (command === `help`) {
+        message.channel.send("Here's the list of the commands :\n?Help : This command.\n?Server : Show the server information.\n?links : show all the links of huaWayy");
+    }
+
+    else if (command === `server`) {
+        message.channel.send(`Server Name : ${message.guild.name}\nUser count : ${message.guild.memberCount}\nOwner : <@470317438203068416>`);
+    }
+
+    else if (command === `links`) {
+        message.channel.send("Here's the links");
+    }
+
+    else if (command === `avatar`) {
+        if (!message.mentions.users.size) {
+            return message.channel.send(`Votre avatar est : ${message.author.displayAvatarURL({format: 'png' })}`);
+        }
+
+        const avatarList = message.mentions.users.map(user => {
+            return `L'avatar de ${user.username} est : ${user.displayAvatarURL({format: 'png' })}`;
+        })
+
+        message.channel.send(avatarList);
+    }
+})
+
+// token
+client.login(token);
